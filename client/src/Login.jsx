@@ -1,6 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:3001/login", { email, password })
+      .then((result) => {
+        console.log(result);
+        if (result.data === "success") {
+          navigate("/home");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   const styles = {
     body: {
       fontFamily: "Arial, sans-serif",
@@ -65,7 +85,7 @@ const Login = () => {
     <div style={styles.body}>
       <div style={styles.container}>
         <h1 style={styles.header}>Login</h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <label style={styles.label} htmlFor="email">
             Email Address
           </label>
@@ -76,6 +96,7 @@ const Login = () => {
             name="email"
             placeholder="Enter your email"
             required
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <label style={styles.label} htmlFor="password">
@@ -88,6 +109,7 @@ const Login = () => {
             name="password"
             placeholder="Enter your password"
             required
+            onChange={(e) => setPassword(e.target.value)}
           />
 
           <button style={styles.button} type="submit">
